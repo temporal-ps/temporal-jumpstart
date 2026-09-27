@@ -42,9 +42,83 @@
       "type": "row"
     },
     {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
       "fieldConfig": {
-        "defaults": {},
-        "overrides": []
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^host$"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -54,22 +128,130 @@
       },
       "id": 75,
       "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "content": "# CPU placeholder\n\nMetrics from the Temporal SDK should be complemented with the workers' CPU and memory usage statistics.",
-        "mode": "markdown"
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
       "pluginVersion": "11.6.1",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (service, worker_instance) (process_cpu_usage{service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "{{service}} {{worker_instance}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max(system_cpu_usage{service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "host",
+          "range": true,
+          "refId": "B"
+        }
+      ],
       "title": "CPU usage",
-      "type": "text"
+      "type": "timeseries",
+      "description": "JVM process CPU (`process_cpu_usage`) as a share of all host cores, per service. The dashed line is whole-host CPU (`system_cpu_usage`) for context."
     },
     {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
       "fieldConfig": {
-        "defaults": {},
-        "overrides": []
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^committed \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -79,17 +261,51 @@
       },
       "id": 76,
       "options": {
-        "code": {
-          "language": "plaintext",
-          "showLineNumbers": false,
-          "showMiniMap": false
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
         },
-        "content": "# Memory placeholder\n\nMetrics from the Temporal SDK should be complemented with the workers' CPU and memory usage statistics.",
-        "mode": "markdown"
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "none"
+        }
       },
       "pluginVersion": "11.6.1",
-      "title": "Memory usage",
-      "type": "text"
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "sum by (service, worker_instance) (jvm_memory_used_bytes{area=\"heap\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "used \u00b7 {{service}} {{worker_instance}}",
+          "range": true,
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "sum by (service, worker_instance) (jvm_memory_committed_bytes{area=\"heap\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "committed \u00b7 {{service}} {{worker_instance}}",
+          "range": true,
+          "refId": "B"
+        }
+      ],
+      "title": "Memory usage (JVM heap)",
+      "type": "timeseries",
+      "description": "Heap in use (`jvm_memory_used_bytes{area=\"heap\"}`) per service. The dashed lines are committed heap, which is the memory the JVM has actually reserved from the OS."
     },
     {
       "collapsed": false,
@@ -197,7 +413,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(temporal_request_total{namespace=~\"$namespace\", namespace!=\"none\"}[$__rate_interval])) by (namespace)\n",
+          "expr": "sum(rate(temporal_request_total{namespace=~\"$namespace\", service=~\"$service\", namespace!=\"none\"}[$__rate_interval])) by (namespace)\n",
           "intervalFactor": 2,
           "legendFormat": "[request] namespace: {{ namespace }}",
           "range": true,
@@ -209,7 +425,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(temporal_request_failure_total{namespace=~\"$namespace\", namespace!=\"none\"}[$__rate_interval])) by (namespace)\n",
+          "expr": "sum(rate(temporal_request_failure_total{namespace=~\"$namespace\", service=~\"$service\", namespace!=\"none\"}[$__rate_interval])) by (namespace)\n",
           "intervalFactor": 2,
           "legendFormat": "[failure] namespace: {{ namespace }}",
           "range": true,
@@ -312,7 +528,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(temporal_request_failure_total{namespace=~\"$namespace\", namespace!=\"none\"}[$__rate_interval])) by (namespace, operation, status_code)\n",
+          "expr": "sum(rate(temporal_request_failure_total{namespace=~\"$namespace\", service=~\"$service\", namespace!=\"none\"}[$__rate_interval])) by (namespace, operation, status_code)\n",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; operation:{{operation}}; status_code:{{status_code}}",
           "range": true,
@@ -415,7 +631,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(temporal_request_total{namespace=~\"$namespace\", namespace!=\"none\"}[$__rate_interval])) by (namespace, operation, task_queue)\n",
+          "expr": "sum(rate(temporal_request_total{namespace=~\"$namespace\", service=~\"$service\", namespace!=\"none\"}[$__rate_interval])) by (namespace, operation, task_queue)\n",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; task_queue: {{task_queue}}; operation:{{operation}}",
           "range": true,
@@ -484,7 +700,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -518,15 +753,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, operation, task_queue, le) (rate(temporal_request_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, operation, task_queue, le) (rate(temporal_request_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; task_queue: {{task_queue}}; operation: {{ operation }}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; task_queue: {{task_queue}}; operation: {{ operation }}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, operation, task_queue) (temporal_request_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; task_queue: {{task_queue}}; operation: {{ operation }}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "RPC Latencies (p95)",
-      "type": "timeseries"
+      "title": "RPC Latencies (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "collapsed": false,
@@ -634,7 +882,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum(rate(temporal_long_request_failure_total{namespace=~\"$namespace\", namespace!=\"none\"}[$__rate_interval])) by (namespace, operation, status_code)\n",
+          "expr": "sum(rate(temporal_long_request_failure_total{namespace=~\"$namespace\", service=~\"$service\", namespace!=\"none\"}[$__rate_interval])) by (namespace, operation, status_code)\n",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; operation:{{operation}}; status_code:{{status_code}}",
           "range": true,
@@ -687,7 +935,7 @@
               "mode": "off"
             }
           },
-          "decimals": 0,
+          "decimals": 1,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
@@ -703,7 +951,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -737,15 +1004,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, operation, task_queue, le) (rate(temporal_long_request_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "sum by (namespace, operation, task_queue) (rate(temporal_long_request_latency_seconds_sum{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n/ sum by (namespace, operation, task_queue) (rate(temporal_long_request_latency_seconds_count{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; task_queue: {{task_queue}}; operation: {{ operation }}",
+          "legendFormat": "avg \u00b7 {{namespace}} \u00b7 {{task_queue}} \u00b7 {{operation}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, operation, task_queue) (temporal_long_request_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 {{namespace}} \u00b7 {{task_queue}} \u00b7 {{operation}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Long RPC Latencies (p95)",
-      "type": "timeseries"
+      "title": "Long Poll Latency (avg / max)",
+      "type": "timeseries",
+      "description": "Poll{Workflow,Activity,Nexus}TaskQueue are long polls. An idle poll waits for the server's poll timeout (about 60s) and then returns empty, so values near 60s mean idle pollers, not slowness. Short polls mean the poll picked up a task. The histogram buckets stop at 30s, so p95 would stay pinned at 30s; this panel uses sum/count for the mean and the `_max` gauge for the recent maximum."
     },
     {
       "collapsed": false,
@@ -849,7 +1129,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, workflow_type) (rate(temporal_workflow_completed_total{namespace=~\"$namespace\"}[$__rate_interval]))\n",
+          "expr": "sum by (namespace, workflow_type) (rate(temporal_workflow_completed_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n",
           "intervalFactor": 2,
           "legendFormat": "namespace:{{namespace}}; WorkflowType {{workflow_type}}",
           "range": true,
@@ -864,7 +1144,7 @@
         "type": "datasource",
         "uid": "-- Mixed --"
       },
-      "description": "",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -916,7 +1196,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -949,14 +1248,26 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, workflow_type, le) (rate(temporal_workflow_endtoend_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, workflow_type, le) (rate(temporal_workflow_endtoend_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace:{{namespace}}; WorkflowType {{workflow_type}}",
+          "legendFormat": "p95 \u00b7 namespace:{{namespace}}; WorkflowType {{workflow_type}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, workflow_type) (temporal_workflow_endtoend_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace:{{namespace}}; WorkflowType {{workflow_type}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Workflow End-To-End Latencies",
+      "title": "Workflow End-To-End Latencies (p95 / max)",
       "type": "timeseries"
     },
     {
@@ -1048,7 +1359,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, workflow_type) (rate(temporal_workflow_failed_total{namespace=~\"$namespace\"}[$__rate_interval]))\n",
+          "expr": "sum by (namespace, workflow_type) (rate(temporal_workflow_failed_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n",
           "intervalFactor": 2,
           "legendFormat": "namespace:{{namespace}}; WorkflowType {{workflow_type}}",
           "range": true,
@@ -1160,7 +1471,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, task_queue) (rate(temporal_workflow_task_queue_poll_succeed_total{namespace=~\"$namespace\"}[$__rate_interval]))\n",
+          "expr": "sum by (namespace, task_queue) (rate(temporal_workflow_task_queue_poll_succeed_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; task_queue:{{task_queue}}",
           "range": true,
@@ -1226,7 +1537,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1259,15 +1589,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, task_queue,  le) (rate(temporal_workflow_task_schedule_to_start_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, task_queue,  le) (rate(temporal_workflow_task_schedule_to_start_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; task_queue:{{task_queue}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; task_queue:{{task_queue}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, task_queue) (temporal_workflow_task_schedule_to_start_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; task_queue:{{task_queue}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Workflow Task Schedule To Start (p95)",
-      "type": "timeseries"
+      "title": "Workflow Task Schedule To Start (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "datasource": {
@@ -1359,7 +1702,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, workflow_type) (rate(temporal_workflow_task_execution_failed_total{namespace=~\"$namespace\"}[$__rate_interval]))\n",
+          "expr": "sum by (namespace, workflow_type) (rate(temporal_workflow_task_execution_failed_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; workflow_type:{{workflow_type}}",
           "range": true,
@@ -1425,7 +1768,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1458,15 +1820,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, workflow_type,  le) (rate(temporal_workflow_task_execution_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, workflow_type,  le) (rate(temporal_workflow_task_execution_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; workflow_type:{{workflow_type}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; workflow_type:{{workflow_type}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, workflow_type) (temporal_workflow_task_execution_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; workflow_type:{{workflow_type}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Workflow Task Execution Latency (p95)",
-      "type": "timeseries"
+      "title": "Workflow Task Execution Latency (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "datasource": {
@@ -1524,7 +1899,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1557,15 +1951,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, workflow_type, le) (rate(temporal_workflow_task_replay_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, workflow_type, le) (rate(temporal_workflow_task_replay_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; workflow_type:{{workflow_type}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; workflow_type:{{workflow_type}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, workflow_type) (temporal_workflow_task_replay_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; workflow_type:{{workflow_type}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Workflow Task Replay Latency (p95)",
-      "type": "timeseries"
+      "title": "Workflow Task Replay Latency (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "datasource": {
@@ -1656,7 +2063,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, task_queue) (rate(temporal_workflow_task_queue_poll_empty_total{namespace=~\"$namespace\"}[$__rate_interval]))\n",
+          "expr": "sum by (namespace, task_queue) (rate(temporal_workflow_task_queue_poll_empty_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; task_queue:{{task_queue}}",
           "range": true,
@@ -1768,7 +2175,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, activity_type) (rate(temporal_local_activity_execution_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval]))",
+          "expr": "sum by (namespace, activity_type) (rate(temporal_local_activity_execution_latency_seconds_count{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
           "range": true,
@@ -1867,7 +2274,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, activity_type) (rate(temporal_local_activity_execution_failed_total{namespace=~\"$namespace\"}[$__rate_interval]))\n",
+          "expr": "sum by (namespace, activity_type) (rate(temporal_local_activity_execution_failed_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
@@ -1934,7 +2341,26 @@
           },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -1967,15 +2393,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_local_activity_execution_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_local_activity_execution_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, activity_type) (temporal_local_activity_execution_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Local Activity Execution Latencies (p95)",
-      "type": "timeseries"
+      "title": "Local Activity Execution Latencies (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "datasource": {
@@ -2033,7 +2472,26 @@
           },
           "unit": "short"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -2066,15 +2524,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_local_activity_succeed_endtoend_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_local_activity_succeed_endtoend_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, activity_type) (temporal_local_activity_succeed_endtoend_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Local Activity Success E2E Latencies (p95)",
-      "type": "timeseries"
+      "title": "Local Activity Success E2E Latencies (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "collapsed": false,
@@ -2178,7 +2649,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, task_queue) (rate(temporal_activity_schedule_to_start_latency_seconds_count {namespace=~\"$namespace\"}[$__rate_interval]))",
+          "expr": "sum by (namespace, task_queue) (rate(temporal_activity_schedule_to_start_latency_seconds_count {namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }} {{task_queue}}",
           "range": true,
@@ -2277,7 +2748,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, activity_type) (rate(temporal_activity_execution_failed_total{namespace=~\"$namespace\"}[$__rate_interval]))\n",
+          "expr": "sum by (namespace, activity_type) (rate(temporal_activity_execution_failed_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))\n",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
           "range": true,
@@ -2343,7 +2814,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -2376,15 +2866,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_activity_execution_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_activity_execution_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, activity_type) (temporal_activity_execution_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Activity Execution Latencies (p95)",
-      "type": "timeseries"
+      "title": "Activity Execution Latencies (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "datasource": {
@@ -2442,7 +2945,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -2475,15 +2997,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_activity_succeed_endtoend_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, activity_type , le) (rate(temporal_activity_succeed_endtoend_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, activity_type) (temporal_activity_succeed_endtoend_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; activity_type:{{activity_type}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Activity Success E2E Latencies (p95)",
-      "type": "timeseries"
+      "title": "Activity Success E2E Latencies (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "datasource": {
@@ -2575,7 +3110,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, activity_type) (rate(temporal_activity_execution_cancelled_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+          "expr": "sum by (namespace, activity_type) (rate(temporal_activity_execution_cancelled_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; activity_type:{{activity_type}}",
@@ -2688,7 +3223,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, task_queue) (rate(temporal_activity_poll_no_task_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+          "expr": "sum by (namespace, task_queue) (rate(temporal_activity_poll_no_task_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; task_queue:{{task_queue}}",
           "range": true,
@@ -2754,7 +3289,26 @@
           },
           "unit": "s"
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^max \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 8,
@@ -2787,15 +3341,28 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "histogram_quantile(0.95, sum by (namespace, task_queue , le) (rate(temporal_activity_schedule_to_start_latency_seconds_bucket{namespace=~\"$namespace\"}[$__rate_interval])))\n",
+          "expr": "histogram_quantile(0.95, sum by (namespace, task_queue , le) (rate(temporal_activity_schedule_to_start_latency_seconds_bucket{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])))\n",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; task_queue:{{task_queue}}",
+          "legendFormat": "p95 \u00b7 namespace: {{ namespace }}; task_queue:{{task_queue}}",
           "range": true,
           "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "max by (namespace, task_queue) (temporal_activity_schedule_to_start_latency_seconds_max{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "max \u00b7 namespace: {{ namespace }}; task_queue:{{task_queue}}",
+          "range": true,
+          "refId": "B"
         }
       ],
-      "title": "Activity Schedule To Start (p95)",
-      "type": "timeseries"
+      "title": "Activity Schedule To Start (p95 / max)",
+      "type": "timeseries",
+      "description": "The Java SDK's Micrometer timers publish histogram buckets only up to 30s, so p95 cannot report a value above 30s: anything slower shows as exactly 30s. The max series comes from the timer's own `_max` gauge, which covers the last few minutes and has no ceiling."
     },
     {
       "collapsed": false,
@@ -2899,7 +3466,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "temporal_worker_task_slots_available{namespace=~\"$namespace\"}",
+          "expr": "temporal_worker_task_slots_available{namespace=~\"$namespace\", service=~\"$service\"}",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; worker_type:{{worker_type}}; task_queue: {{task_queue}}",
           "range": true,
@@ -2922,7 +3489,7 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
-            "axisLabel": "",
+            "axisLabel": "slots",
             "axisPlacement": "auto",
             "barAlignment": 0,
             "drawStyle": "line",
@@ -2949,23 +3516,39 @@
               "mode": "off"
             }
           },
-          "decimals": 0,
           "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "green"
-              },
-              {
-                "color": "red",
-                "value": 80
+                "color": "green",
+                "value": null
               }
             ]
           },
-          "unit": "short"
+          "unit": "short",
+          "min": 0
         },
-        "overrides": []
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": "^capacity \u00b7 .*"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "dash": [
+                    10,
+                    10
+                  ],
+                  "fill": "dash"
+                }
+              }
+            ]
+          }
+        ]
       },
       "gridPos": {
         "h": 11,
@@ -2983,11 +3566,13 @@
           ],
           "displayMode": "table",
           "placement": "bottom",
-          "showLegend": true
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
         },
         "tooltip": {
-          "mode": "single",
-          "sort": "none"
+          "mode": "multi",
+          "sort": "desc"
         }
       },
       "pluginVersion": "v10.4.0",
@@ -2998,15 +3583,127 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "temporal_worker_task_slots_used{namespace=~\"$namespace\"}",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; worker_type:{{worker_type}}; task_queue: {{task_queue}}",
           "range": true,
-          "refId": "A"
+          "refId": "A",
+          "expr": "(sum by (namespace, service, worker_type, task_queue) (max_over_time(temporal_worker_task_slots_used{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])) > 0)",
+          "legendFormat": "used \u00b7 {{service}} \u00b7 {{worker_type}} \u00b7 {{task_queue}}"
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "range": true,
+          "refId": "B",
+          "expr": "(sum by (namespace, service, worker_type, task_queue) (temporal_worker_task_slots_used{namespace=~\"$namespace\", service=~\"$service\"}) + sum by (namespace, service, worker_type, task_queue) (temporal_worker_task_slots_available{namespace=~\"$namespace\", service=~\"$service\"}))\nand on (namespace, service, worker_type, task_queue) (sum by (namespace, service, worker_type, task_queue) (max_over_time(temporal_worker_task_slots_used{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])) > 0)",
+          "legendFormat": "capacity \u00b7 {{service}} \u00b7 {{worker_type}} \u00b7 {{task_queue}}"
         }
       ],
-      "title": "Slots Used",
-      "type": "timeseries"
+      "title": "Slots Used (sampled peak) vs Capacity",
+      "type": "timeseries",
+      "description": "**used** (solid): highest `temporal_worker_task_slots_used` reading in each interval, summed across worker instances. **capacity** (dashed): `slots_used + slots_available`, the same number of slots the *Slots Available* panel counts down from. When used approaches capacity, the worker type is saturated. Because these come from the gauge they are correct for long-running tasks, but the 15s scrape rarely catches millisecond tasks in flight (see *Avg Busy Slots*). Series that are idle (0 used) are hidden."
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "slots",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "min": 0
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 140
+      },
+      "id": 77,
+      "interval": "5s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "sortBy": "Max",
+          "sortDesc": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "v10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "intervalFactor": 2,
+          "range": true,
+          "refId": "A",
+          "expr": "(sum by (namespace, service, worker_type, task_queue) (rate(temporal_workflow_task_execution_latency_seconds_sum{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])) or sum by (namespace, service, worker_type, task_queue) (rate(temporal_activity_execution_latency_seconds_sum{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])) or sum by (namespace, service, worker_type, task_queue) (rate(temporal_local_activity_execution_latency_seconds_sum{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval])) or sum by (namespace, service, worker_type, task_queue) (rate(temporal_nexus_task_execution_latency_seconds_sum{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))) > 0",
+          "legendFormat": "{{service}} \u00b7 {{worker_type}} \u00b7 {{task_queue}}"
+        }
+      ],
+      "title": "Avg Busy Slots (from execution time)",
+      "type": "timeseries",
+      "description": "Seconds of task execution per second, from the execution latency `_sum` counters of workflow, activity, local activity and Nexus tasks. By Little's law this equals the average number of busy slots, and it counts tasks of any length, including millisecond ones the slot gauge never catches. Counters only increase when a task completes, so long-running tasks show up as a spike at completion; use *Slots Used vs Capacity* for those. Idle series are hidden."
     },
     {
       "collapsed": false,
@@ -3014,7 +3711,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 140
+        "y": 148
       },
       "id": 38,
       "panels": [],
@@ -3083,7 +3780,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 141
+        "y": 149
       },
       "id": 42,
       "interval": "5s",
@@ -3110,7 +3807,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "temporal_sticky_cache_size{namespace=~\"$namespace\"}",
+          "expr": "temporal_sticky_cache_size{namespace=~\"$namespace\", service=~\"$service\"}",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}",
           "range": true,
@@ -3182,7 +3879,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 141
+        "y": 149
       },
       "id": 63,
       "interval": "5s",
@@ -3209,7 +3906,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, workflow_type) (rate(temporal_sticky_cache_total_forced_eviction_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+          "expr": "sum by (namespace, workflow_type) (rate(temporal_sticky_cache_total_forced_eviction_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; workflow_type: {{ workflow_type }};",
           "range": true,
@@ -3281,7 +3978,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 149
+        "y": 157
       },
       "id": 45,
       "interval": "5s",
@@ -3308,7 +4005,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace) (rate(temporal_sticky_cache_hit_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+          "expr": "sum by (namespace) (rate(temporal_sticky_cache_hit_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}",
           "range": true,
@@ -3380,7 +4077,7 @@
         "h": 8,
         "w": 12,
         "x": 12,
-        "y": 149
+        "y": 157
       },
       "id": 43,
       "interval": "5s",
@@ -3407,7 +4104,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": "sum by (namespace, task_queue) (rate(temporal_sticky_cache_miss_total{namespace=~\"$namespace\"}[$__rate_interval]))",
+          "expr": "sum by (namespace, task_queue) (rate(temporal_sticky_cache_miss_total{namespace=~\"$namespace\", service=~\"$service\"}[$__rate_interval]))",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}; task_queue:{{task_queue}}",
           "range": true,
@@ -3423,7 +4120,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 157
+        "y": 165
       },
       "id": 74,
       "panels": [],
@@ -3495,7 +4192,7 @@
         "h": 8,
         "w": 12,
         "x": 0,
-        "y": 158
+        "y": 166
       },
       "id": 73,
       "interval": "5s",
@@ -3523,7 +4220,7 @@
             "uid": "$datasource"
           },
           "editorMode": "code",
-          "expr": " temporal_workflow_active_thread_count{namespace=~\"$namespace\"}",
+          "expr": " temporal_workflow_active_thread_count{namespace=~\"$namespace\", service=~\"$service\"}",
           "intervalFactor": 2,
           "legendFormat": "namespace: {{ namespace }}",
           "range": true,
@@ -3574,6 +4271,35 @@
         "refresh": 2,
         "regex": "",
         "type": "query"
+      },
+      {
+        "current": {
+          "selected": true,
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "prometheus",
+          "uid": "${datasource}"
+        },
+        "definition": "label_values(temporal_request_total, service)",
+        "includeAll": true,
+        "multi": true,
+        "name": "service",
+        "options": [],
+        "query": {
+          "query": "label_values(temporal_request_total, service)",
+          "refId": "Prometheus-service-Variable-Query"
+        },
+        "refresh": 2,
+        "regex": "",
+        "type": "query",
+        "label": "service",
+        "allValue": ".*"
       }
     ]
   },

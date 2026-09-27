@@ -26,7 +26,7 @@ docker-compose -f docker-compose.otel.yaml --profile local up -d
 # Start your Temporal SDK Worker
 # (command varies by SDK - ensure metrics are exposed on port 9464)
 
-# Access Grafana at http://localhost:3000
+# Access Grafana at http://localhost:4000
 # Default credentials: admin/admin
 ```
 
@@ -55,7 +55,7 @@ docker-compose -f docker-compose.otel.yaml --profile both up -d
 # Start your Temporal SDK Worker
 # (command varies by SDK - ensure metrics are exposed on port 9464)
 
-# Access local Grafana at http://localhost:3000
+# Access local Grafana at http://localhost:4000
 ```
 
 ---
@@ -91,7 +91,7 @@ GRAFANA_CLOUD_PASSWORD=glc_xxxxxxxxxxxxxxxxxxxx
 
 ### Local Grafana
 
-1. Open http://localhost:3000 (login: admin/admin)
+1. Open http://localhost:4000 (login: admin/admin)
 2. Go to **Explore**
 3. The Prometheus datasource is pre-configured
 4. Query for metrics like:
@@ -185,7 +185,7 @@ OpenTelemetry Collector (Docker)
          ↓ (batch & forward)
 Prometheus (Docker:9090)
          ↓
-Grafana (Docker:3000)
+Grafana (Docker:4000)
 ```
 
 ### Cloud Profile
@@ -205,7 +205,7 @@ Temporal SDK Worker (localhost:9464)
          ↓ (scrape every 15s)
 OpenTelemetry Collector (Docker)
          ↓ (batch & forward to both)
-         ├─→ Local Prometheus (Docker:9090) → Grafana (Docker:3000)
+         ├─→ Local Prometheus (Docker:9090) → Grafana (Docker:4000)
          └─→ GrafanaCloud Prometheus → GrafanaCloud Dashboards
 ```
 

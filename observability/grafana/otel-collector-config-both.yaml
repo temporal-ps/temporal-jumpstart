@@ -7,16 +7,61 @@ receivers:
   prometheus:
     config:
       scrape_configs:
-        # Spring Boot apps with Actuator
+        # Spring Boot apps with Actuator.
+        # Targets are the management.server.port values that
+        # fde-temporal-oms scripts/local-up.sh passes to each service.
+        # The workshop v2 workers (9083, 9093) are only up during the
+        # safe-fulfillment-handoff workshop and report down otherwise.
         - job_name: 'temporal-worker-spring'
           scrape_interval: 15s
           metrics_path: '/actuator/prometheus'
           static_configs:
-            - targets: ['host.docker.internal:8081']
+            - targets: [ 'host.docker.internal:9091' ]
               labels:
-                service: 'temporal-worker'
+                service: 'apps-api'
                 environment: 'local'
-                worker_instance: 'worker-1'
+            - targets: ['host.docker.internal:9092']
+              labels:
+                service: 'apps-worker'
+                environment: 'local'
+                worker_instance: 'apps-worker-1'
+            - targets: ['host.docker.internal:9093']
+              labels:
+                service: 'apps-worker'
+                environment: 'local'
+                worker_instance: 'apps-worker-v2'
+            - targets: [ 'host.docker.internal:9081' ]
+              labels:
+                service: 'processing-api'
+                environment: 'local'
+            - targets: [ 'host.docker.internal:9082' ]
+              labels:
+                service: 'processing-worker'
+                environment: 'local'
+                worker_instance: 'processing-worker-1'
+            - targets: [ 'host.docker.internal:9083' ]
+              labels:
+                service: 'processing-worker'
+                environment: 'local'
+                worker_instance: 'processing-worker-v2'
+            - targets: [ 'host.docker.internal:9071' ]
+              labels:
+                service: 'fulfillment-api'
+                environment: 'local'
+            - targets: [ 'host.docker.internal:9072' ]
+              labels:
+                service: 'fulfillment-worker'
+                environment: 'local'
+                worker_instance: 'fulfillment-worker-1'
+            - targets: [ 'host.docker.internal:9050' ]
+              labels:
+                service: 'enablements-api'
+                environment: 'local'
+            - targets: [ 'host.docker.internal:9052' ]
+              labels:
+                service: 'enablements-worker'
+                environment: 'local'
+                worker_instance: 'enablements-worker-1'
 
         # Non-Spring apps with standard /metrics endpoint
         - job_name: 'temporal-worker-standard'
@@ -27,7 +72,16 @@ receivers:
               labels:
                 service: 'temporal-worker'
                 environment: 'local'
-                worker_instance: 'worker-2'   
+                worker_instance: 'worker-2'
+
+  # OTLP push from apps that export directly (fde-temporal-oms apps-api and
+  # apps-workers push to localhost:4317 via ObservabilityConfig).
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
 
 processors:
   # Add batch processing to reduce network calls
@@ -36,11 +90,12 @@ processors:
     send_batch_size: 1024
 
   # Add resource attributes for better filtering in Grafana
+  # service.name is left as set by each receiver: the scrape job_name for
+  # prometheus targets, the app-reported name for OTLP. Prometheus remote
+  # write maps it to the `job` label, so overriding it here collapses every
+  # app into one job.
   resource:
     attributes:
-      - key: service.name
-        value: temporal-jumpstart-dotnet
-        action: upsert
       - key: deployment.environment
         from_attribute: environment
         action: upsert
@@ -76,13 +131,31 @@ exporters:
     sampling_initial: 5
     sampling_thereafter: 200
 
+  # Sink for OTLP traces; there is no local trace backend.
+  debug/traces:
+    verbosity: basic
+
 service:
   extensions: [basicauth/grafana]
+  # Bind the collector's own metrics on all interfaces so the Prometheus
+  # container can scrape it on port 8888.
+  telemetry:
+    metrics:
+      readers:
+        - pull:
+            exporter:
+              prometheus:
+                host: 0.0.0.0
+                port: 8888
   pipelines:
     metrics:
-      receivers: [prometheus]
+      receivers: [prometheus, otlp]
       processors: [batch, resource]
       # Export to BOTH local and cloud
       exporters: [prometheusremotewrite/local, prometheusremotewrite/cloud]
       # Uncomment to also log metrics for debugging:
       # exporters: [prometheusremotewrite/local, prometheusremotewrite/cloud, debug]
+    traces:
+      receivers: [otlp]
+      processors: [batch]
+      exporters: [debug/traces]
