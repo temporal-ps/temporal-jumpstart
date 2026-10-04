@@ -3468,7 +3468,7 @@
           "editorMode": "code",
           "expr": "temporal_worker_task_slots_available{namespace=~\"$namespace\", service=~\"$service\"}",
           "intervalFactor": 2,
-          "legendFormat": "namespace: {{ namespace }}; worker_type:{{worker_type}}; task_queue: {{task_queue}}",
+          "legendFormat": "{{service}} · {{worker_type}} · {{task_queue}}",
           "range": true,
           "refId": "A"
         }
@@ -3619,6 +3619,104 @@
           "custom": {
             "axisCenteredZero": false,
             "axisColorMode": "text",
+            "axisLabel": "pollers",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "stepAfter",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "short",
+          "min": 0
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 140
+      },
+      "id": 78,
+      "interval": "5s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "v10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "$datasource"
+          },
+          "editorMode": "code",
+          "expr": "sum by (namespace, service, worker_type, task_queue, poller_type) (temporal_num_pollers{namespace=~\"$namespace\", service=~\"$service\"})",
+          "intervalFactor": 2,
+          "legendFormat": "{{service}} · {{worker_type}} · {{poller_type}} · {{task_queue}}",
+          "range": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Pollers",
+      "type": "timeseries",
+      "description": "Current poller count per worker, from `temporal_num_pollers`. Workflow workers report `workflow_task` and `workflow_sticky_task` pollers separately. Compare with *Slots Available*: pollers only request tasks while a slot is free, so available slots with few pollers means the worker cannot fill its capacity, and zero available slots means extra pollers add no throughput."
+    },
+    {
+      "datasource": {
+        "type": "datasource",
+        "uid": "-- Mixed --"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
             "axisLabel": "slots",
             "axisPlacement": "auto",
             "barAlignment": 0,
@@ -3663,8 +3761,8 @@
       },
       "gridPos": {
         "h": 8,
-        "w": 24,
-        "x": 0,
+        "w": 12,
+        "x": 12,
         "y": 140
       },
       "id": 77,
